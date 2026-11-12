@@ -5,7 +5,8 @@ import type { Deal, DealEvent, Listing } from "./types";
 import { SEED_LISTINGS } from "./seed";
 
 // Hackathon-grade persistence: one JSON file, rewritten on every change.
-const DB_PATH = path.join(process.cwd(), ".data", "db.json");
+// Vercel's filesystem is read-only outside /tmp.
+const DB_PATH = process.env.VERCEL ? path.join("/tmp", "recallhold", "db.json") : path.join(process.cwd(), ".data", "db.json");
 
 interface DB {
   listings: Listing[];
