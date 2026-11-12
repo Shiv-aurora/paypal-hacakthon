@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 import { useConfig, useDeal, usd } from "@/lib/client";
 import type { CheckEvent, DealStatus, Listing } from "@/lib/types";
-import { BuyerApp } from "@/components/buyer-app";
+import { BuyerApp, type Screen } from "@/components/buyer-app";
 import { SellerApp } from "@/components/seller-app";
 import { AiPanel, emptyTrace, Ledger, reduceTrace, type AiTrace } from "@/components/ledger";
 import { PhoneFrame } from "@/components/phone";
@@ -22,6 +22,7 @@ export function DemoStage({ listings }: { listings: Listing[] }) {
   const [run, setRun] = useState(0);
   const [dealId, setDealId] = useState<string | null>(null);
   const [trace, setTrace] = useState<AiTrace>(emptyTrace);
+  const [screen, setScreen] = useState<Screen>("listing");
   const data = useDeal(dealId);
   const listing = listings.find((l) => l.id === listingId)!;
 
@@ -29,6 +30,7 @@ export function DemoStage({ listings }: { listings: Listing[] }) {
     setListingId(id);
     setDealId(null);
     setTrace(emptyTrace);
+    setScreen("listing");
     setRun((r) => r + 1);
   };
   const onCheckEvent = useCallback((e: CheckEvent) => setTrace((t) => reduceTrace(t, e)), []);
@@ -62,15 +64,17 @@ export function DemoStage({ listings }: { listings: Listing[] }) {
         </div>
       </header>
 
+      <Guide screen={screen} status={data?.deal.status} listing={listing} other={listings.find((l) => l.id !== listingId)} onSwitch={reset} />
+
       <section className="mx-auto grid max-w-[1280px] grid-cols-1 items-start justify-items-center gap-10 px-6 py-8 lg:grid-cols-[auto_1fr_auto] lg:justify-items-stretch">
-        <PhoneFrame label="Buyer (Alex)">
-          <BuyerApp key={`${listingId}-${run}`} listing={listing} config={config} onDeal={setDealId} onCheckEvent={onCheckEvent} />
+        <PhoneFrame
+          highlight={screen !== "checking" && screen !== "result"}
+          label={<Role tag="Buyer" who={`Alex, picking up the ${itemNoun(listing)}`} note="You tap this phone" />}
+        >
+          <BuyerApp key={`${listingId}-${run}`} listing={listing} config={config} onDeal={setDealId} onCheckEvent={onCheckEvent} onScreen={setScreen} />
         </PhoneFrame>
 
         <div className="w-full max-w-[400px] justify-self-center pt-7">
-          <p className="text-[15px] leading-snug text-ink-2">
-            Tap through the buyer&apos;s phone. The seller&apos;s phone and the panels below read the same deal from the server.
-          </p>
           <WhereIsTheMoney status={data?.deal.status} amount={data?.deal.amount ?? listing.price} payout={data?.deal.payoutAmount} />
           <div className="mt-4 space-y-4">
             <AiPanel trace={trace} live={config?.ai === "live"} />
@@ -79,7 +83,7 @@ export function DemoStage({ listings }: { listings: Listing[] }) {
           <ModeNote config={config} className="mt-4" />
         </div>
 
-        <PhoneFrame label={`Seller (${listing.sellerName})`}>
+        <PhoneFrame label={<Role tag="Seller" who={`${listing.sellerName}, who listed it for ${usd(listing.price)}`} note="Updates on its own" />}>
           <SellerApp listing={listing} deal={data?.deal ?? null} />
         </PhoneFrame>
       </section>
@@ -103,7 +107,7 @@ function WhereIsTheMoney({ status, amount, payout }: { status?: DealStatus; amou
             ? "Label unreadable. Still on hold."
             : `Captured and paid out (${usd(amount - value)} fee).`;
   return (
-    <div className="mt-5">
+    <div>
       <h3 className="text-[14px] font-bold">Where the money is</h3>
       <div className="mt-2 grid grid-cols-3 overflow-hidden rounded-[6px] border border-ink bg-white">
         {cells.map((c, i) => (
@@ -116,5 +120,87 @@ function WhereIsTheMoney({ status, amount, payout }: { status?: DealStatus; amou
       </div>
       <p className="mt-2 text-[13px] text-ink-2">{caption}</p>
     </div>
+  );
+}
+
+const itemNoun = (l: Listing) => (l.category === "sleeper" ? "swing" : l.category === "stroller" ? "stroller" : "item");
+
+function Role({ tag, who, note }: { tag: string; who: string; note: string }) {
+  return (
+    <div className="w-[360px]">
+      <p className="flex items-center gap-2">
+        <span className="rounded-[4px] bg-ink px-2 py-0.5 text-[12px] font-bold uppercase tracking-wide text-white">{tag}</span>
+        <span className="text-[13px] text-ink-3">{note}</span>
+      </p>
+      <p className="mt-1 text-[16px] font-semibold">{who}</p>
+    </div>
+  );
+}
+
+const STEPS = ["Buyer pays into a hold", "Pickup: photograph the sticker", "Claude checks CPSC recalls", "PayPal moves the money"];
+
+// Tells the viewer what just happened and what to tap next.
+function Guide({ screen, status, listing, other, onSwitch }: { screen: Screen; status?: DealStatus; listing: Listing; other?: Listing; onSwitch: (id: string) => void }) {
+  const sample = listing.category === "sleeper" ? "Infant swing" : "Stroller";
+  let step = 0;
+  let title = "";
+  let action: React.ReactNode = null;
+  if (screen === "listing") {
+    title = `The buyer pays ${usd(listing.price)}, but PayPal only holds it. Nothing is charged yet.`;
+    action = <>← Tap <b>Hold {usd(listing.price)} with PayPal</b> on the buyer&apos;s phone</>;
+  } else if (screen === "held") {
+    step = 1;
+    title = `The money is on hold. ${listing.sellerName} can see it on the right, but can't touch it.`;
+    action = <>← Tap <b>I&apos;m at pickup</b> on the buyer&apos;s phone</>;
+  } else if (screen === "scan") {
+    step = 1;
+    title = `At pickup, the buyer photographs the model sticker on the ${itemNoun(listing)}.`;
+    action = <>← Tap the <b>{sample}</b> sample label{listing.category === "sleeper" ? " (model DRG43)" : ""}</>;
+  } else if (screen === "checking" || !status || status === "checking" || status === "held") {
+    step = 2;
+    title = "Claude reads the model number and date, then compares them with every matching CPSC recall.";
+    action = <>Watch the middle column →</>;
+  } else {
+    step = 3;
+    if (status === "refunded") {
+      title = `Recalled. PayPal voided the hold, so the buyer paid $0 and ${listing.sellerName} never received money for a recalled ${itemNoun(listing)}.`;
+      action = <>Answer the call on the buyer&apos;s phone{other && <>, then <SwitchButton onClick={() => onSwitch(other.id)}>try the safe {itemNoun(other)} →</SwitchButton></>}</>;
+    } else if (status === "needs_review") {
+      title = "The label couldn't be read, so nothing moved. The hold stays until there's a clear photo.";
+      action = <>Take another photo on the buyer&apos;s phone</>;
+    } else {
+      title = `No recall covers this ${itemNoun(listing)}. PayPal captured the hold and paid ${listing.sellerName} on the spot.`;
+      action = other ? <SwitchButton onClick={() => onSwitch(other.id)}>Now try the recalled {itemNoun(other)} →</SwitchButton> : null;
+    }
+  }
+  const done = step === 3;
+  const tone = done ? (status === "refunded" ? "bg-recall text-white" : status === "needs_review" ? "bg-yellow" : "bg-clear text-white") : "bg-yellow";
+  return (
+    <div className={clsx("transition-colors duration-500", tone)}>
+      <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-10 gap-y-3 px-6 py-4">
+        <ol className="flex gap-1.5">
+          {STEPS.map((s, i) => (
+            <li key={s} title={s} className={clsx("h-2 w-10 rounded-full", i <= step ? (done ? "bg-white" : "bg-ink") : done ? "bg-white/35" : "bg-ink/20")} />
+          ))}
+        </ol>
+        <div className="min-w-0 flex-1">
+          <p className="font-mono text-[12px] opacity-75">
+            Step {step + 1} of 4 · {STEPS[step]}
+          </p>
+          <motion.p key={title} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="text-[18px] font-semibold leading-snug">
+            {title}
+          </motion.p>
+        </div>
+        {action && <p className="text-[15px]">{action}</p>}
+      </div>
+    </div>
+  );
+}
+
+function SwitchButton({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button onClick={onClick} className="rounded-[5px] bg-white px-3 py-1.5 font-semibold text-ink hover:bg-ink hover:text-white">
+      {children}
+    </button>
   );
 }

@@ -14,7 +14,7 @@ import { PayPalButtons } from "./paypal-buttons";
 import { Logo, Spinner } from "./ui";
 import { useStatusBar } from "./phone";
 
-type Screen = "listing" | "held" | "scan" | "checking" | "result";
+export type Screen = "listing" | "held" | "scan" | "checking" | "result";
 type StepKey = "reading" | "searching" | "matching" | "money";
 
 // iOS-style push between screens.
@@ -30,9 +30,10 @@ export interface BuyerAppProps {
   buyerName?: string;
   onDeal?: (dealId: string) => void;
   onCheckEvent?: (e: CheckEvent) => void;
+  onScreen?: (screen: Screen) => void;
 }
 
-export function BuyerApp({ listing, config, buyerName = "Alex", onDeal, onCheckEvent }: BuyerAppProps) {
+export function BuyerApp({ listing, config, buyerName = "Alex", onDeal, onCheckEvent, onScreen }: BuyerAppProps) {
   const [screen, setScreen] = useState<Screen>("listing");
   const [dealId, setDealId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +51,8 @@ export function BuyerApp({ listing, config, buyerName = "Alex", onDeal, onCheckE
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
-  }, [screen]);
+    onScreen?.(screen);
+  }, [screen, onScreen]);
 
   // --- Pay: create the PayPal order with intent AUTHORIZE --------------------
   const dealRef = useRef<string | null>(null);

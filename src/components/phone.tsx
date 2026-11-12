@@ -22,13 +22,13 @@ function Clock() {
 }
 
 // A plain device frame. On small screens (fullOnMobile) the app fills the viewport instead.
-export function PhoneFrame({ children, className, label, fullOnMobile }: { children: React.ReactNode; className?: string; label?: string; fullOnMobile?: boolean }) {
+export function PhoneFrame({ children, className, label, fullOnMobile, highlight }: { children: React.ReactNode; className?: string; label?: React.ReactNode; fullOnMobile?: boolean; highlight?: boolean }) {
   const m = (c: string) => (fullOnMobile ? c : "");
   const [bar, setBar] = useState<"light" | "dark">("light");
   return (
     <div className={clsx("relative", className)}>
-      {label && <p className="mb-2.5 text-[13px] font-semibold text-ink-2 max-md:hidden">{label}</p>}
-      <div className={clsx("relative rounded-[50px] bg-[#1b1b1b] p-[10px] shadow-[0_30px_60px_-30px_rgba(0,0,0,0.45)]", m("max-md:rounded-none max-md:p-0 max-md:shadow-none"))}>
+      {label && <div className="mb-3 max-md:hidden">{label}</div>}
+      <div className={clsx("relative rounded-[50px] bg-[#1b1b1b] p-[10px] shadow-[0_30px_60px_-30px_rgba(0,0,0,0.45)] outline-offset-[6px] transition-[outline-color] duration-300", highlight ? "outline-[5px] outline-yellow outline" : "outline-transparent", m("max-md:rounded-none max-md:p-0 max-md:shadow-none"))}>
         <div className={clsx("ios relative isolate h-[740px] w-[360px] overflow-hidden rounded-[41px] bg-ios-bg text-black", m("max-md:h-dvh max-md:w-screen max-md:rounded-none"))}>
           <div
             className={clsx(
