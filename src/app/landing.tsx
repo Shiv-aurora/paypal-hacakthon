@@ -3,6 +3,7 @@
 import Link from "next/link";
 import clsx from "clsx";
 import { useState } from "react";
+import { motion } from "motion/react";
 import type { Listing } from "@/lib/types";
 import { useSampleImage } from "@/lib/labels";
 import { Logo } from "@/components/ui";
@@ -183,6 +184,7 @@ export function Landing({ listings }: { listings: Listing[] }) {
       <div className="hazard h-3" />
 
       <ProblemSection />
+      <ImpactSection />
 
       <section className="mx-auto max-w-[1200px] px-6 py-20">
         <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr]">
@@ -392,12 +394,6 @@ const FACTS = [
     href: "https://abc7ny.com/post/cpsc-calls-on-meta-mattel-to-get-fisher-price-rock-n-play-sleeper/13118930/",
   },
   {
-    big: "22%",
-    text: "of recalled children's products are returned, replaced or repaired. The rest stay in homes, or get sold on.",
-    src: "Kids In Danger, 2024",
-    href: "https://6abc.com/post/kids-in-danger-recall-report-children-product-safety/15296263/",
-  },
-  {
     big: "50,000+",
     text: "recalled or illegal products CPSC asked online sites to take down in 2023. Takedowns happen after the listing is live.",
     src: "Consumer Reports",
@@ -412,7 +408,12 @@ function ProblemSection() {
         <h2 className="wide max-w-[820px] text-[34px] font-bold leading-[1.05] tracking-tight">
           The problem: a recall notice reaches the first owner. It doesn&apos;t follow the product.
         </h2>
-        <div className="mt-10 grid border-t-2 border-yellow sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid gap-4 lg:grid-cols-[1fr_1.15fr]">
+          <FixedChart />
+          <ScaleChart />
+        </div>
+
+        <div className="mt-10 grid border-t-2 border-yellow lg:grid-cols-3">
           {FACTS.map((f, i) => (
             <div key={f.big} className={clsx("border-b border-white/15 py-6 pr-6 lg:border-b-0", i > 0 && "lg:border-l lg:pl-6")}>
               <p className="wide text-[40px] font-extrabold leading-none text-yellow">{f.big}</p>
@@ -446,6 +447,108 @@ function ProblemSection() {
         </p>
       </div>
     </section>
+  );
+}
+
+const IMPACT = [
+  ["Payment becomes a recall checkpoint", "Recalls today depend on the first owner reading a notice. Recallhold checks at the moment the second owner pays, before the item changes hands."],
+  ["Any CPSC product, not just one category", "Cribs, swings, heaters, e-bikes, helmets, dressers. One photo checks the label against the whole CPSC recall database."],
+  ["No money moves on a recalled item", "The buyer is never charged. The seller learns their item is recalled and sees the manufacturer's refund or repair offer."],
+  ["Safe sales get faster, not slower", "When the label clears, PayPal captures and pays the seller on the spot. No waiting for a transfer to land."],
+];
+
+function ImpactSection() {
+  return (
+    <section className="border-b border-rule bg-yellow">
+      <div className="mx-auto max-w-[1200px] px-6 py-20">
+        <p className="font-mono text-[14px]">What changes</p>
+        <h2 className="wide mt-3 max-w-[900px] text-[34px] font-bold leading-[1.05] tracking-tight sm:text-[40px]">
+          A recalled product stops at the driveway, before money changes hands and before it reaches a child.
+        </h2>
+        <div className="mt-12 grid border-t-2 border-ink sm:grid-cols-2 lg:grid-cols-4">
+          {IMPACT.map(([title, body], i) => (
+            <div key={title} className={clsx("border-b border-ink/20 py-6 pr-6 lg:border-b-0", i > 0 && "lg:border-l lg:border-ink/20 lg:pl-6")}>
+              <p className="font-mono text-[13px] font-semibold">0{i + 1}</p>
+              <p className="mt-2 text-[19px] font-bold leading-tight">{title}</p>
+              <p className="mt-3 text-[15px] leading-[1.5] text-ink/80">{body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Kids In Danger 2024: 22% of recalled children's products are corrected.
+function FixedChart() {
+  return (
+    <div className="rounded-[6px] bg-white/[0.06] p-6">
+      <p className="text-[14px] font-bold">Out of every 100 recalled children&apos;s products</p>
+      <div className="mt-5 grid grid-cols-[repeat(20,minmax(0,1fr))] gap-[5px]">
+        {Array.from({ length: 100 }, (_, i) => (
+          <motion.span
+            key={i}
+            initial={{ opacity: 0, scale: 0.4 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ delay: i * 0.012, duration: 0.2 }}
+            className={clsx("aspect-square rounded-[2px]", i < 22 ? "bg-yellow" : "bg-recall")}
+          />
+        ))}
+      </div>
+      <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-[15px]">
+        <p>
+          <span className="mr-2 inline-block size-3 bg-yellow align-middle" />
+          <b className="wide text-[22px] text-yellow">22</b> returned, replaced or repaired
+        </p>
+        <p>
+          <span className="mr-2 inline-block size-3 bg-recall align-middle" />
+          <b className="wide text-[22px] text-[#ff8a80]">78</b> still in homes, or sold on
+        </p>
+      </div>
+      <a href="https://6abc.com/post/kids-in-danger-recall-report-children-product-safety/15296263/" target="_blank" rel="noreferrer" className="mt-4 inline-block font-mono text-[12px] text-white/50 underline underline-offset-2 hover:text-white">
+        Source: Kids In Danger, 2024 recall report
+      </a>
+    </div>
+  );
+}
+
+const RECALLS = [
+  { name: "Fisher-Price Rock 'n Play sleeper", units: 4.7, note: "recalled 2019, still sold by the hundreds each month in 2023", href: "https://abc7ny.com/post/cpsc-calls-on-meta-mattel-to-get-fisher-price-rock-n-play-sleeper/13118930/" },
+  { name: "Fisher-Price Snuga swing", units: 2, note: "recalled Oct 2024 after 5 deaths, 21 model numbers", href: "https://www.cpsc.gov/Recalls/2025/Fisher-Price-Recalls-More-than-2-Million-Snuga-Infant-Swings-Due-to-Suffocation-Hazard-After-5-Deaths-Reported" },
+];
+
+// Unit counts from the recall notices. Each recalled unit is one more possible resale.
+function ScaleChart() {
+  return (
+    <div className="rounded-[6px] bg-white/[0.06] p-6">
+      <p className="text-[14px] font-bold">Two recalls, millions of units already in circulation</p>
+      <div className="mt-6 space-y-6">
+        {RECALLS.map((r, i) => (
+          <div key={r.name}>
+            <p className="flex items-baseline justify-between gap-3 text-[15px]">
+              <span>{r.name}</span>
+              <span className="wide shrink-0 text-[26px] font-extrabold text-yellow">{r.units === 2 ? "2M+" : `${r.units}M`}</span>
+            </p>
+            <div className="mt-2 h-7 bg-white/[0.08]">
+              <motion.div
+                initial={{ width: 0 }}
+                whileInView={{ width: `${(r.units / 4.7) * 100}%` }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ delay: 0.2 + i * 0.25, duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
+                className="hazard h-full"
+              />
+            </div>
+            <a href={r.href} target="_blank" rel="noreferrer" className="mt-1.5 inline-block text-[13px] text-white/60 underline decoration-white/25 underline-offset-2 hover:text-white">
+              {r.note}
+            </a>
+          </div>
+        ))}
+      </div>
+      <p className="mt-6 border-t border-white/15 pt-4 text-[15px] leading-[1.5] text-white/85">
+        A recall notice goes to the person who bought it new. Every one of these units can be listed again tomorrow, and the next buyer gets no notice at all.
+      </p>
+    </div>
   );
 }
 
