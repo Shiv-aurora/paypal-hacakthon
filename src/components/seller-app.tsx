@@ -102,7 +102,7 @@ export function SellerApp({ listing, deal }: { listing: Listing; deal: Deal | nu
               </div>
               <div className="border-t border-black/10 px-4 py-2.5 font-mono text-[12.5px] text-black/70">
                 <Line k="Sale" v={usd(deal!.amount)} />
-                <Line k="Cleared fee 3%" v={`−${usd(deal!.amount - payout)}`} />
+                <Line k="Recallhold fee 3%" v={`−${usd(deal!.amount - payout)}`} />
                 <Line k="You get" v={usd(payout)} bold />
               </div>
             </div>

@@ -1,8 +1,8 @@
-# Cleared
+# Recallhold
 
 **Check the sticker before you pay.**
 
-Cleared is a payment link for secondhand baby gear. The buyer pays with PayPal, but the money is only put on hold. At pickup, the buyer photographs the product's model sticker. Claude reads the brand, model number and manufacture date, and Cleared compares them against the U.S. Consumer Product Safety Commission (CPSC) recall database. Only then does any money move.
+Recallhold is a payment link for secondhand baby gear. The buyer pays with PayPal, but the money is only put on hold. At pickup, the buyer photographs the product's model sticker. Claude reads the brand, model number and manufacture date, and Cleared compares them against the U.S. Consumer Product Safety Commission (CPSC) recall database. Only then does any money move.
 
 | Result | What PayPal does | Buyer pays | Seller gets |
 | --- | --- | --- | --- |
@@ -10,13 +10,13 @@ Cleared is a payment link for secondhand baby gear. The buyer pays with PayPal, 
 | A recall covers this model | Voids the hold | $0 | The manufacturer's remedy from the recall notice |
 | Label can't be read | Keeps the hold | Nothing yet | Nothing yet; the buyer takes another photo |
 
-![Cleared landing page](docs/landing.png)
+![Recallhold landing page](docs/landing.png)
 
 ## Why
 
 In October 2024 Fisher-Price recalled more than 2 million Snuga infant swings for a suffocation hazard ([CPSC recall 25009](https://www.cpsc.gov/Recalls/2025/Fisher-Price-Recalls-More-than-2-Million-Snuga-Infant-Swings-Due-to-Suffocation-Hazard-After-5-Deaths-Reported)). The recall covers 21 model numbers that look nearly identical. The only way to tell whether a swing is one of them is the sticker under the motor housing. In a secondhand sale nobody reads that sticker before the money changes hands, and cash can't be taken back afterwards.
 
-PayPal can authorize a payment without capturing it. Cleared uses that window to run the check.
+PayPal can authorize a payment without capturing it. Recallhold uses that window to run the check.
 
 ## The demo
 
@@ -100,7 +100,7 @@ Sales are stored in `.data/db.json`. Delete it to start fresh.
 ```mermaid
 sequenceDiagram
   participant B as Buyer's phone
-  participant C as Cleared (Next.js)
+  participant C as Recallhold (Next.js)
   participant P as PayPal
   participant A as Claude
   participant G as CPSC Recall API

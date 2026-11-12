@@ -14,9 +14,9 @@ function pickVoice() {
   return voices.find((v) => v.lang.startsWith("en-US")) ?? voices[0];
 }
 
-// A phone call from Cleared that reads the verdict aloud with captions. The
+// A phone call from Recallhold that reads the verdict aloud with captions. The
 // buyer is standing in a driveway holding the item, not reading a screen.
-export function CallOverlay({ open, script, caller = "Cleared", onClose }: { open: boolean; script: string; caller?: string; onClose: () => void }) {
+export function CallOverlay({ open, script, caller = "Recallhold", onClose }: { open: boolean; script: string; caller?: string; onClose: () => void }) {
   // Mounting the screen only while open means every call starts fresh.
   return <AnimatePresence>{open && <CallScreen key="call" script={script} caller={caller} onClose={onClose} />}</AnimatePresence>;
 }

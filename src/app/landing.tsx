@@ -72,7 +72,7 @@ const QUESTIONS = [
   ],
   [
     "What if the photo is blurry?",
-    "Nothing moves. The hold stays in place and you're asked for another photo. Cleared won't guess a model number.",
+    "Nothing moves. The hold stays in place and you're asked for another photo. Recallhold won't guess a model number.",
   ],
   [
     "What if the seller doesn't show up?",
@@ -127,14 +127,13 @@ export function Landing({ listings }: { listings: Listing[] }) {
       <section className="bg-yellow">
         <div className="mx-auto grid max-w-[1200px] gap-12 px-6 pb-20 pt-10 lg:grid-cols-[1.15fr_1fr] lg:pt-16">
           <div>
-            <h1 className="wide max-w-[680px] text-[48px] font-extrabold leading-[0.98] tracking-[-0.02em] sm:text-[64px]">
-              Check the sticker before you pay.
+            <p className="font-mono text-[14px]">Secondhand sales have no recall check.</p>
+            <h1 className="wide mt-3 max-w-[680px] text-[44px] font-extrabold leading-[0.98] tracking-[-0.02em] sm:text-[58px]">
+              Recalled products get resold. We hold the payment until they don&apos;t.
             </h1>
-            <p className="mt-7 max-w-[540px] text-[19px] leading-[1.5]">
-              Cleared is a payment link for secondhand baby gear. The
-              buyer&apos;s money sits on a PayPal hold until they photograph the
-              product label at pickup. If that model is under a CPSC recall, the
-              hold is cancelled and nobody pays.
+            <p className="mt-7 max-w-[560px] text-[19px] leading-[1.5]">
+              Selling a recalled product is illegal in the U.S., but nobody checks at a Marketplace pickup. Recallhold puts the buyer&apos;s PayPal payment on hold, has Claude read the product&apos;s model sticker, and checks it against every CPSC recall.{" "}
+              <b>Recalled: the hold is cancelled and nobody pays. Safe: the seller is paid on the spot.</b>
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
@@ -182,6 +181,8 @@ export function Landing({ listings }: { listings: Listing[] }) {
         </div>
       </section>
       <div className="hazard h-3" />
+
+      <ProblemSection />
 
       <section className="mx-auto max-w-[1200px] px-6 py-20">
         <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr]">
@@ -300,7 +301,7 @@ export function Landing({ listings }: { listings: Listing[] }) {
           </table>
           <p className="mt-4 max-w-[760px] text-[14px] text-ink-2">
             PayPal does the holding, capturing, voiding and paying out (Orders
-            v2 with intent=AUTHORIZE, Authorizations, Payouts). Cleared decides
+            v2 with intent=AUTHORIZE, Authorizations, Payouts). Recallhold decides
             which of those to call, based on what&apos;s printed on the label.
           </p>
         </div>
@@ -373,5 +374,93 @@ export function Landing({ listings }: { listings: Listing[] }) {
         </div>
       </footer>
     </main>
+  );
+}
+
+// Sourced facts only. Each links to where the number comes from.
+const FACTS = [
+  {
+    big: "Illegal",
+    text: "to sell a recalled product in the U.S., secondhand included (Consumer Product Safety Act, Section 19).",
+    src: "CPSC",
+    href: "https://www.cpsc.gov/Business--Manufacturing/Business-Education/ResaleThrift-Stores-Information-Center/Stop-Online-Sale-of-Recalled-Products",
+  },
+  {
+    big: "Hundreds",
+    text: "of recalled Rock 'n Play sleepers sold every month on Facebook Marketplace and other secondhand sites, the CPSC chair said in 2023. 4.7 million were recalled.",
+    src: "ABC7 / CPSC",
+    href: "https://abc7ny.com/post/cpsc-calls-on-meta-mattel-to-get-fisher-price-rock-n-play-sleeper/13118930/",
+  },
+  {
+    big: "22%",
+    text: "of recalled children's products are returned, replaced or repaired. The rest stay in homes, or get sold on.",
+    src: "Kids In Danger, 2024",
+    href: "https://6abc.com/post/kids-in-danger-recall-report-children-product-safety/15296263/",
+  },
+  {
+    big: "50,000+",
+    text: "recalled or illegal products CPSC asked online sites to take down in 2023. Takedowns happen after the listing is live.",
+    src: "Consumer Reports",
+    href: "https://advocacy.consumerreports.org/press_release/amazon-facebook-marketplace-and-other-online-marketplaces-might-be-off-the-hook-for-dangerous-products-sold-on-their-platforms-consumer-reports-is-working-to-change-that",
+  },
+];
+
+function ProblemSection() {
+  return (
+    <section className="bg-ink text-white">
+      <div className="mx-auto max-w-[1200px] px-6 py-20">
+        <h2 className="wide max-w-[820px] text-[34px] font-bold leading-[1.05] tracking-tight">
+          The problem: a recall notice reaches the first owner. It doesn&apos;t follow the product.
+        </h2>
+        <div className="mt-10 grid border-t-2 border-yellow sm:grid-cols-2 lg:grid-cols-4">
+          {FACTS.map((f, i) => (
+            <div key={f.big} className={clsx("border-b border-white/15 py-6 pr-6 lg:border-b-0", i > 0 && "lg:border-l lg:pl-6")}>
+              <p className="wide text-[40px] font-extrabold leading-none text-yellow">{f.big}</p>
+              <p className="mt-3 text-[15px] leading-[1.5] text-white/85">{f.text}</p>
+              <a href={f.href} target="_blank" rel="noreferrer" className="mt-3 inline-block font-mono text-[12px] text-white/50 underline underline-offset-2 hover:text-white">
+                Source: {f.src}
+              </a>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-14 grid gap-4 lg:grid-cols-2">
+          <Flow
+            title="A Marketplace sale today"
+            tone="bad"
+            steps={["Listing: \"Baby swing, $65\"", "Cash or instant transfer at pickup", "Nobody reads the model sticker", "A recalled swing goes home with a newborn"]}
+          />
+          <Flow
+            title="The same sale with Recallhold"
+            tone="good"
+            steps={["Buyer pays: PayPal holds $65, charges nothing", "At pickup: photo of the model sticker", "Claude reads DRG43, CPSC says recall 25009", "PayPal voids the hold. $0 charged, swing stays."]}
+          />
+        </div>
+
+        <p className="mt-10 max-w-[820px] text-[16px] leading-[1.6] text-white/75">
+          It isn&apos;t only baby gear. CPSC covers{" "}
+          <a className="underline" href="https://business.cpsc.gov/recalls/cpsc.html" target="_blank" rel="noreferrer">
+            more than 15,000 kinds of consumer products
+          </a>
+          : space heaters, e-bikes, dressers, helmets, toys. Recallhold checks anything in that database. The demo uses baby gear because that&apos;s where a missed recall does the most harm. Vehicles and car seats fall under NHTSA, which isn&apos;t connected yet.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function Flow({ title, steps, tone }: { title: string; steps: string[]; tone: "good" | "bad" }) {
+  return (
+    <div className={clsx("rounded-[6px] p-5", tone === "bad" ? "bg-white/[0.06]" : "bg-yellow text-ink")}>
+      <p className="text-[14px] font-bold">{title}</p>
+      <ol className="mt-3 space-y-2">
+        {steps.map((st, i) => (
+          <li key={st} className="flex items-start gap-3 text-[15px]">
+            <span className={clsx("mt-0.5 grid size-6 shrink-0 place-items-center rounded-full font-mono text-[12px] font-semibold", tone === "bad" ? "bg-white/15" : "bg-ink text-yellow")}>{i + 1}</span>
+            <span className={clsx(i === steps.length - 1 && "font-semibold", i === steps.length - 1 && tone === "bad" && "text-[#ff8a80]")}>{st}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }

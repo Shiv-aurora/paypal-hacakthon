@@ -229,7 +229,7 @@ export default function Pitch() {
         )}
       </AnimatePresence>
       <div className={clsx("absolute inset-x-16 bottom-8 flex justify-between font-mono text-[13px]", slide?.tone === "ink" ? "text-white/50" : "text-ink/50")}>
-        <span>Cleared · PayPal AI Hackathon</span>
+        <span>Recallhold · PayPal AI Hackathon</span>
         <span>
           {(i ?? 0) + 1} / {SLIDES.length}
         </span>

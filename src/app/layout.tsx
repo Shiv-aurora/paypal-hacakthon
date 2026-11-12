@@ -6,9 +6,9 @@ const archivo = Archivo({ variable: "--font-archivo", subsets: ["latin"], axes: 
 const plexMono = IBM_Plex_Mono({ variable: "--font-plex-mono", subsets: ["latin"], weight: ["400", "500", "600"] });
 
 export const metadata: Metadata = {
-  title: "Cleared: check the sticker before you pay",
+  title: "Recallhold: hold the payment until the recall check clears",
   description:
-    "Pay for secondhand baby gear with a PayPal hold. At pickup, photograph the label; Cleared checks it against CPSC recalls before any money moves.",
+    "Pay for secondhand baby gear with a PayPal hold. At pickup, photograph the label; Recallhold checks it against CPSC recalls before any money moves.",
 };
 
 export const viewport: Viewport = { themeColor: "#ffd400" };

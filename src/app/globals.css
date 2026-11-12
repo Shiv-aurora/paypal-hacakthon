@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Cleared borrows from the thing it checks: printed safety labels and recall
+/* Recallhold borrows from the thing it checks: printed safety labels and recall
    notices. Flat color, black ink, one loud yellow, no gradients. */
 @theme inline {
   --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;

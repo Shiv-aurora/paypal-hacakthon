@@ -65,7 +65,7 @@ export async function POST(req: Request, ctx: RouteContext<"/api/deals/[id]/chec
             dealId: deal.id,
             email: listing.sellerPaypalEmail,
             amount: payoutAmount,
-            note: `${listing.title} passed its Cleared safety check.`,
+            note: `${listing.title} passed its Recallhold recall check.`,
           });
           const updated = await updateDeal(
             id,

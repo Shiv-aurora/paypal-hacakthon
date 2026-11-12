@@ -66,7 +66,7 @@ export async function createHoldOrder(opts: { dealId: string; amount: number; de
       payment_source: {
         paypal: {
           experience_context: {
-            brand_name: "Cleared",
+            brand_name: "Recallhold",
             user_action: "CONTINUE",
             shipping_preference: "NO_SHIPPING",
           },

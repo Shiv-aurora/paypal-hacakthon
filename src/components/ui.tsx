@@ -13,7 +13,7 @@ export function Logo({ className, invert = false }: { className?: string; invert
         <rect x="1.25" y="1.25" width="17.5" height="17.5" stroke="currentColor" strokeWidth="2.5" />
         <path d="M5 10.5l3.2 3.2L15 6.5" stroke="currentColor" strokeWidth="2.8" strokeLinecap="square" />
       </svg>
-      <span className="wide tracking-tight">Cleared</span>
+      <span className="wide tracking-tight">Recallhold</span>
     </span>
   );
 }

@@ -148,7 +148,7 @@ function unreadableVerdict(): Verdict {
     headline: "We couldn't read that label",
     explanation: "The photo is too blurry to read the model number. Your money is still on hold, so nothing has been paid. Try another photo in better light.",
     matchedRecall: null,
-    callScript: "Hi, it's Cleared. We couldn't quite read that label, so your money is still safely on hold. Try one more photo in better light and we'll check it right away.",
+    callScript: "Hi, it's Recallhold. We couldn't quite read that label, so your money is still safely on hold. Try one more photo in better light and we'll check it right away.",
     saferAlternatives: ["Retake the photo closer to the label", "Ask the seller where the model sticker is"],
   };
 }
@@ -190,7 +190,7 @@ async function scriptedVerify(onProgress: VerifyProgress, sampleHint?: string) {
           ? { recallNumber: match.recallNumber, title: match.title, date: match.date, url: match.url, hazard: match.hazard, remedy: match.remedy, image: match.image }
           : null,
         callScript:
-          "Hi, it's Cleared calling about the swing you just scanned. Model DRG43 is part of an active Fisher-Price recall, so we released your payment and you won't be charged. If you still need a swing, I've sent you a few safer options.",
+          "Hi, it's Recallhold calling about the swing you just scanned. Model DRG43 is part of an active Fisher-Price recall, so we released your payment and you won't be charged. If you still need a swing, I've sent you a few safer options.",
         saferAlternatives: ["A Snuga Swing with the headrest and insert removed per the recall notice", "A swing model not listed in recall 25009", "A bouncer that meets the current federal infant-sleep standard"],
       },
     };
@@ -221,7 +221,7 @@ async function scriptedVerify(onProgress: VerifyProgress, sampleHint?: string) {
         explanation:
           "UPPAbaby has three CPSC recalls, but they cover the RIDGE jogging stroller, RumbleSeat adapters and 2015 strollers, not a 2023 VISTA V2. The seller is being paid now.",
         matchedRecall: null,
-        callScript: "Good news from Cleared: we found no recall for this VISTA V2, so the seller has been paid. Enjoy the walks!",
+        callScript: "Good news from Recallhold: we found no recall for this VISTA V2, so the seller has been paid. Enjoy the walks!",
         saferAlternatives: [],
       },
     };

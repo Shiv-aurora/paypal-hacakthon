@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     const order = await createHoldOrder({
       dealId: deal.id,
       amount: listing.price,
-      description: `Held by Cleared until safety check: ${listing.title}`,
+      description: `Held by Recallhold until safety check: ${listing.title}`,
     });
     await updateDeal(deal.id, { paypalOrderId: order.id }, {
       kind: "info",
