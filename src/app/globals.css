@@ -1,26 +1,69 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* Cleared borrows from the thing it checks: printed safety labels and recall
+   notices. Flat color, black ink, one loud yellow, no gradients. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-ios: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
+
+  --color-ink: #111111;
+  --color-ink-2: #4a4a4a;
+  --color-ink-3: #8a8a8a;
+  --color-rule: #dcdcdc;
+  --color-desk: #ececea;
+  --color-yellow: #ffd400;
+  --color-yellow-deep: #e6be00;
+  --color-recall: #d42a1e;
+  --color-clear: #0b7a3e;
+  --color-hold: #8a6a00;
+  --color-paypal: #0070e0;
+  --color-ios-bg: #f2f2f7;
+  --color-ios-sep: #c6c6c8;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: var(--color-ink);
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Archivo's width axis: expanded caps read like a printed label. */
+.wide {
+  font-stretch: 125%;
+}
+.narrow {
+  font-stretch: 75%;
+}
+
+.ios {
+  font-family: var(--font-ios);
+  letter-spacing: -0.01em;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Diagonal hazard stripe, used once per page at most. */
+.hazard {
+  background: repeating-linear-gradient(-45deg, var(--color-ink) 0 14px, var(--color-yellow) 14px 28px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
