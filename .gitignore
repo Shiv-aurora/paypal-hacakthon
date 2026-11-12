@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local demo database
+.data/
+
+!.env.example
+
+# kept out of iCloud sync
+*.nosync
