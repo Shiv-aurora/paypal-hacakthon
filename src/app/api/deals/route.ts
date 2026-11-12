@@ -28,12 +28,12 @@ export async function POST(req: Request) {
       amount: listing.price,
       description: `Held by Recallhold until safety check: ${listing.title}`,
     });
-    await updateDeal(deal.id, { paypalOrderId: order.id }, {
+    const saved = await updateDeal(deal.id, { paypalOrderId: order.id }, {
       kind: "info",
       title: "PayPal order created",
       detail: `Order ${order.id} with intent AUTHORIZE`,
     });
-    return NextResponse.json({ dealId: deal.id, orderId: order.id, simulated: deal.simulated });
+    return NextResponse.json({ dealId: deal.id, orderId: order.id, simulated: deal.simulated, deal: saved });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: (err as Error).message }, { status: 502 });

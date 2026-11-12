@@ -12,7 +12,7 @@ export async function POST(req: Request, ctx: RouteContext<"/api/deals/[id]/chec
   const { id } = await ctx.params;
   const { image, sample } = (await req.json()) as { image: string; sample?: string };
 
-  const deal = await getDeal(id);
+  const deal = await getDeal(id, req);
   const listing = deal && (await getListing(deal.listingId));
   if (!deal || !listing) return Response.json({ error: "Deal not found" }, { status: 404 });
   if (!deal.authorizationId) return Response.json({ error: "Payment is not on hold yet" }, { status: 409 });

@@ -58,8 +58,21 @@ export async function createListing(input: Omit<Listing, "id" | "createdAt">) {
   return listing;
 }
 
-export async function getDeal(id: string) {
-  return (await load()).deals.find((d) => d.id === id) ?? null;
+export async function getDeal(id: string, req?: Request) {
+  const db = await load();
+  const found = db.deals.find((d) => d.id === id) ?? null;
+  // Serverless instances don't share /tmp, so the browser sends the newest copy
+  // it has seen. Take it when this instance has none or an older one.
+  let snap: Deal | null = null;
+  try {
+    const raw = req?.headers.get("x-deal");
+    snap = raw ? (JSON.parse(decodeURIComponent(raw)) as Deal) : null;
+  } catch {}
+  if (!snap || snap.id !== id) return found;
+  if (found && found.updatedAt >= snap.updatedAt) return found;
+  if (found) Object.assign(found, snap);
+  else db.deals.push(snap);
+  return found ?? snap;
 }
 
 export async function findDealByOrder(orderId: string) {

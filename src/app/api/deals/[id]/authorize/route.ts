@@ -4,9 +4,9 @@ import { authorizeOrder } from "@/lib/paypal";
 
 // Called from the PayPal button's onApprove: turns the approved order into an
 // authorization hold. Nothing is captured until the safety check clears.
-export async function POST(_req: Request, ctx: RouteContext<"/api/deals/[id]/authorize">) {
+export async function POST(req: Request, ctx: RouteContext<"/api/deals/[id]/authorize">) {
   const { id } = await ctx.params;
-  const deal = await getDeal(id);
+  const deal = await getDeal(id, req);
   if (!deal?.paypalOrderId) return NextResponse.json({ error: "Deal has no PayPal order" }, { status: 404 });
   if (deal.authorizationId) return NextResponse.json({ deal });
 
